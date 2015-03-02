@@ -4,14 +4,13 @@ A Java Class for reformatting Tableau Server Apache/httpd/access logs for easy a
 Interface is not great yet, I'll fix that. Current steps to use:
 
 1.	Generate a set of Tableau Server logs.
-2.	Find the file path of the log files. Copy this into line 12 of AccessLogTabify.java
-3.	Find the name of one of the access logs. Copy this into line 13 of AccessLogTabify.java.
-4.	Run the file. Hopefully a new file named “FormattedLogs.txt” will appear in the specified directory.
-5.	Open attached workbook.
-6.	Right-Click on datasource and select Edit Data Source
-7.	Click on the file name under Directory in the far-left pane
-8.	Navigate to the FormattedLogs.txt file
-9.	Open logs and explore.
+2.	Find the file path of the log files. Copy this into line 13 of AccessLogTabify.java
+3.	Run the file. Hopefully a new file named “FormattedLogs.txt” will appear in the specified directory.
+4.	Open attached workbook.
+5.	Right-Click on datasource and select Edit Data Source
+6.	Click on the file name under Directory in the far-left pane
+7.	Navigate to the FormattedLogs.txt file
+8.	Open logs and explore.
 
 Next steps:
 
