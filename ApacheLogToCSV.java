@@ -33,7 +33,7 @@ public class ApacheLogToCSV {
 		//Creates file and writes headers
 		initializeFile(print_line);
 		
-		loopOverFile(print_line,directory,allLogs);	
+		loopOverFile(print_line,directory,allLogs,"primary");	
 		
 		write.close();
 		print_line.close();
@@ -48,7 +48,7 @@ public class ApacheLogToCSV {
 	private void initializeFile(PrintWriter write)  throws IOException{
 		System.out.println("writing first line");
 		String firstLine =      //First Line of output
-				"\"Remote Host IP\", \"Remote Username\", \"Timestamp\", \"TimeZone\", "
+				"\"Workername\", \"Remote Host IP\", \"Remote Username\", \"Timestamp\", \"TimeZone\", "
 				+ "\"port\", \"Content\", \"X-Forwarded-For IP\", \"Last Status\", "
 				+ "\"Size (bytes)\", \"Elapsed Time\", \"ID\"";
 		write.println(firstLine);
@@ -58,8 +58,7 @@ public class ApacheLogToCSV {
 	//Looks for httpd and then applies writeFiles to internal Objects
 	//If isPrimary and combineLogs, then also loops over subfolders beginning with worker.
 	//level = 0 means primary, level = 1 means worker, level = 2 means httpd folder
-	private void loopOverFile(PrintWriter write, String path, 
-			Boolean combineLogs) throws IOException{
+	private void loopOverFile(PrintWriter write, String path, Boolean combineLogs, String workername) throws IOException{
 		
 		File mainDirectory = new File(path);
 		String[] fileList = mainDirectory.list();
@@ -68,15 +67,15 @@ public class ApacheLogToCSV {
 			if(fileList[i].matches("access.[\\d_]*.log")){
 				String fileName = path + "/" + fileList[i];
 				System.out.println("adding " + fileName);
-				writeFile(fileName, write);
+				writeFile(fileName, write, workername);
 			} else if(fileList[i].equals("httpd")){
 				String folderPath = path + "/" + fileList[i];
 				System.out.println("looping over " + folderPath);
-				loopOverFile(write, folderPath, combineLogs);
+				loopOverFile(write, folderPath, combineLogs, workername);
 			} else if (combineLogs && fileList[i].matches("worker\\d*")) {
 				String workerPath = path + "/" + fileList[i];
 				System.out.println("looping over worker " + workerPath);
-				loopOverFile(write, workerPath, combineLogs);
+				loopOverFile(write, workerPath, combineLogs, fileList[i]);
 			}
 		}
 	}
@@ -84,7 +83,7 @@ public class ApacheLogToCSV {
 	
 	
 	//Takes in fileReader to format and output name and writes a new formatted file
-	private void writeFile(String inputFilePath, PrintWriter print_line) throws IOException{
+	private void writeFile(String inputFilePath, PrintWriter print_line, String workername) throws IOException{
 		Boolean verbose = false;
 		
 		FileReader fr = new FileReader(inputFilePath);
@@ -98,7 +97,7 @@ public class ApacheLogToCSV {
 		String line;
 		line = bf.readLine();
 		while (line != null) {
-			print_line.printf("%s" + "%n", formatLine(line));
+			print_line.printf("%s" + "%n", formatLine(line, workername));
 			line = bf.readLine();
 		}
 		
@@ -107,12 +106,12 @@ public class ApacheLogToCSV {
 	}
 	
 	//formats a single line of a log file.
-	private String formatLine(String Line){
+	private String formatLine(String Line, String workername){
 		Boolean verbose = false;
 		
 		String pat = "^([^\\s]*)"		//Remote Host IP
 				+ "\\s([^\\s]*)"		//Remote Username
-				+ "\\s[^\\s]*"			//(excluded) something useless I forget
+				+ "\\s[^\\s]*"			//(excluded) Remote logname
 				+ "\\s\\[([^\\s^:]*)"	//Day/month/year
 				+ ":([^\\s]*)\\s"		//hour:minute:second
 				+ "([^\\s]*)]\\s"		//Offset from UST
@@ -120,7 +119,7 @@ public class ApacheLogToCSV {
 				+ "\"([^\"]*)\"\\s"		//Content. Assumes content cannot contain "
 				+ "\"([^\"]*)\"\\s"		//X-Forarded-For IP
 				+ "(\\d*)\\s"			//Last Status
-				+ "[^\\s]*\\s"				//(excluded)something useless I forget
+				+ "[^\\s]*\\s"			//(excluded) Content Length
 				+ "\"([\\d-]*)\"\\s"	//Size in bytes. 0 displayed as -.
 				+ "(\\d*)\\s"			//time in milliseconds
 				+ "(.*)$";				//ID
@@ -128,12 +127,12 @@ public class ApacheLogToCSV {
 		Matcher matcher = pattern.matcher(Line);
 
 		if(matcher.find()){
-			String formatString = String.format("%1$2s, %2$2s, %3$2s %4$2s, %5$2s, %6$2s, "
+			String formatString = String.format("%13$2s, %1$2s, %2$2s, %3$2s %4$2s, %5$2s, %6$2s, "
 					+ "%7$2s, %8$2s, %9$2s, %10$2s, %11$2s, %12$2s", 
 					matcher.group(1),matcher.group(2),matcher.group(3),
 					matcher.group(4),matcher.group(5),matcher.group(6),
 					matcher.group(7),matcher.group(8),matcher.group(9),
-					matcher.group(10),matcher.group(11),matcher.group(12));
+					matcher.group(10),matcher.group(11),matcher.group(12), workername);
 			if(verbose){System.out.println(formatString);};
 			return formatString;
 		}
