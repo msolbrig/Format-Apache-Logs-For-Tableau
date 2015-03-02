@@ -14,9 +14,8 @@ Interface is not great yet, I'll fix that. Current steps to use:
 
 Next steps:
 
-1.	Include a column for worker name and/or ip address of worker.
-2.	Create an interface so that a user is prompted to navigate to the logs folder and what they would like the ouptut name of the file to be.
-3.	Create some better example workbooks demonstrating why someone would want to use this.
-4.	Use the Extract API to export this directly as a .tde instead of a .txt/.csv file.
+1.	Create an interface so that a user is prompted to navigate to the logs folder and what they would like the ouptut name of the file to be.
+2.	Create some better example workbooks demonstrating why someone would want to use this.
+3.	Use the Extract API to export this directly as a .tde instead of a .txt/.csv file.
 
 Any feedback on the code is welcome.
