@@ -27,16 +27,17 @@ public class ApacheLogToCSV {
 	}
 	
 	//Takes in file name to format and output name and writes a new formatted file
-	public void writeToFile(String inputFileName, String outputFileName) throws IOException{
+	public void writeToFile(String inputFileName, String outputFileName, Boolean append) throws IOException{
+		
 		String inputPath = directory +"/" + inputFileName;
 		String outputPath = directory + "/" + outputFileName;
 		
 		FileReader fr = new FileReader(inputPath);
 		BufferedReader bf = new BufferedReader(fr);
-		FileWriter write = new FileWriter(outputPath);
+		FileWriter write = new FileWriter(outputPath, append);
 		PrintWriter print_line=new PrintWriter(write);
 		
-		print_line.printf("%s" + "%n", firstLine);
+		if(!append){print_line.printf("%s" + "%n", firstLine);};
 		
 		String line;
 		line = bf.readLine();
@@ -89,3 +90,4 @@ public class ApacheLogToCSV {
 		}
 	}
 }
+
