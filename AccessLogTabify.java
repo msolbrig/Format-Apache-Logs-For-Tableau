@@ -7,15 +7,15 @@ import java.io.IOException;
 //but I haven't done that yet.
 
 public class AccessLogTabify{
-	
-	public static void main(String[] args) throws IOException{
-		String masterDirectory = "C:/Users/msolbrig/workspace/AccessLogTabify/Example Log Files/Distributed System";
-		//String inputFileName = "access.2015_02_09_00_00_00.log";
-		String outputFileName = "FormattedLogs.txt";
-		
-		ApacheLogToCSV thing = new ApacheLogToCSV(masterDirectory,outputFileName);
-		
-		thing.combineLogs();
-	}
+    
+    public static void main(String[] args) throws IOException{
+        String masterDirectory = "C:/Users/msolbrig/workspace/AccessLogTabify/Example Log Files/Worker X/TableauServerlogs";
+        String outputFileName = "FormattedLogs.txt";
+
+        
+        ApacheLogToCSV thing = new ApacheLogToCSV(masterDirectory,outputFileName);
+        
+        thing.combineLogs();
+    }
 
 }
